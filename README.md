@@ -16,3 +16,10 @@ Future Features of Castellan will support the following
     - Future weather rolls
     - Session report logging
 - Campagin calendar generation
+
+
+## Support and Contributing
+If you would like to support development or hosting of this bot, please visit my patreon or consider buying some of my published modules. You can find links to both [here](https://linktr.ee/flooded_realms).
+
+### If you are a developer
+I would love to have you. This project is licensed up AGPL and thus open for outside contribution. If you wish contribute you can reach out to me throw github, twitter or discord if you have me there.
