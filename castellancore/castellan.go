@@ -73,6 +73,19 @@ var (
 				},
 			},
 		},
+		{
+			Name:        "register",
+			Description: "Register a new campaign in this server.",
+			Options: []*discordgo.ApplicationCommandOption{
+
+				{
+					Type:        discordgo.ApplicationCommandOptionString,
+					Name:        "name",
+					Description: "String option",
+					Required:    true,
+				},
+			},
+		},
 	}
 	
 
@@ -150,8 +163,39 @@ var (
 				})
 			}
 		},
+			"register": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			// Access options in the order provided by the user.
+			options := i.ApplicationCommandData().Options
+
+			// Or convert the slice into a map
+			optionMap := make(map[string]*discordgo.ApplicationCommandInteractionDataOption, len(options))
+			for _, opt := range options {
+				optionMap[opt.Name] = opt
+			}
+
+			// Get the value from the option map.
+			// When the option exists, ok = true
+			opt, ok := optionMap["name"]; 
+			if ok {
+				// Option values must be type asserted from interface{}.
+				// Discordgo provides utility functions to make this simple.
+				msg := registerCampaign(i.Interaction.GuildID, opt.StringValue())
+				s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				// Ignore type for now, they will be discussed in "responses"
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: msg,
+				},
+			})
+		}
+			
+		},
+		
 	}
 )
+
+
+
 
 func init() {
 	s.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
