@@ -1,9 +1,9 @@
 package castellancore
 import (
 	"castellan/data"
+	"log"
 	"fmt"
 )
-
 
 
 
@@ -12,3 +12,10 @@ func weather() (string) {
  return fmt.Sprintf("%s", weather);
 }
 
+func getTodaysWeatherReport(campaignId int) string {
+	report, err := data.GetTodaysWeatherReport(campaignId)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return report
+}

@@ -41,13 +41,13 @@ var WeatherNames = []string {
 	tableq :=  "SELECT * FROM weatherhexes WHERE marked = 1;";
 	rows, err := runQuery(tableq)//"SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%';")
 	defer rows.Close()
-	checkerr(err)
+	checkerr(err, "tableq")
 
 	hexes := make([]WeatherHex, 0)
 	for rows.Next() {
 		currentHex := WeatherHex{}
 		err = rows.Scan(&currentHex.id, &currentHex.weather_id, &currentHex.marked, &currentHex.one, &currentHex.two, &currentHex.three, &currentHex.four, &currentHex.five, &currentHex.six) 
-		checkerr(err)
+		checkerr(err, "none")
 		hexes = append(hexes, currentHex);
 	}
 
