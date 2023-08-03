@@ -36,12 +36,13 @@ CREATE TABLE weatherHexes (
 );
 
 
-CREATE TABLE weatherMarker (
+CREATE TABLE weatherMarkers (
 	id INTEGER,
 	campaignId INTEGER,
 	weatherSystemId INTEGER,
     hexId INTEGER,
     weatherDate TEXT,
+    lastDiceRoll INTEGER,
 	PRIMARY KEY (id AUTOINCREMENT),
 	FOREIGN KEY (weatherSystemId) REFERENCES weatherSystems (id),
 	FOREIGN KEY (campaignId) REFERENCES campaigns (id)
