@@ -4,7 +4,6 @@ import (
 	"flag"
 	"os"
 	"os/signal"
-	"fmt"
 	"log"
 	"time"
 
@@ -45,11 +44,11 @@ var (
 
 	commands = []*discordgo.ApplicationCommand{
 		{
-			Name: "weather-roll",
-			Description: "Rolls for a day's weather.",
+			Name: "weather",
+			Description: "Rolls for the next day's weather. in chain",
 		},
 		{
-			Name:        "weather",
+			Name:        "daily-weather",
 			Description: "Command for demonstrating options",
 			Options: []*discordgo.ApplicationCommandOption{
 
@@ -91,15 +90,15 @@ var (
 
 
 	commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-		"weather-roll": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+		"weather": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
 				Data: &discordgo.InteractionResponseData{
-					Content: weather(),
+					Content: weather(i.Interaction.GuildID, "Yoon Suin"),
 				},
 			})
 		},
-		"weather": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+		"daily-weather": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			// Access options in the order provided by the user.
 			options := i.ApplicationCommandData().Options
 
@@ -109,38 +108,29 @@ var (
 				optionMap[opt.Name] = opt
 			}
 
-			// This example stores the provided arguments in an []interface{}
-			// which will be used to format the bot's response
-			margs := make([]interface{}, 0, len(options))
-			msgformat := "You learned how to use command options! " +
-				"Take a look at the value(s) you entered:\n"
-
 			// Get the value from the option map.
 			// When the option exists, ok = true
 			if option, ok := optionMap["type"]; ok {
 				// Option values must be type asserted from interface{}.
 				// Discordgo provides utility functions to make this simple.
-				margs = append(margs, option.StringValue())
-				msgformat += "> Type: %s\n"
-			}
-
-			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				msg := dailyWeather(i.Interaction.GuildID, option.StringValue())
+				s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 				// Ignore type for now, they will be discussed in "responses"
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
 				Data: &discordgo.InteractionResponseData{
-					Content: fmt.Sprintf(
-						msgformat,
-						margs...,
-					),
+					Content: msg ,
 				},
 			})
-		},
+
+			}
+
+					},
 		"schedule": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			options := i.ApplicationCommandData().Options
 			optionMap := make(map[string]*discordgo.ApplicationCommandInteractionDataOption, len(options))
 			weatherMessage := func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			channel := i.Interaction.ChannelID
-			_, err := s.ChannelMessageSend(channel, weather())
+			_, err := s.ChannelMessageSend(channel, weather(i.Interaction.GuildID, "Yoon Suin"))
 			if err != nil {
 				log.Fatal(err)
 			}

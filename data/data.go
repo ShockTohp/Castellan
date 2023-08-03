@@ -45,8 +45,13 @@ func RegisterCampaign(GuildID string, name string) (string, error) {
 	return "", nil
 } 
 
-func GetTodaysWeatherReport(cId int) (string, error) {
-	return "Report", nil
+func GetCampaignIdByGuild(gi string) (int, error) {
+	id, _ := strconv.ParseInt(gi, 10, 64);
+	var cId int;
+	cq := fmt.Sprintf("SELECT id FROM %s c WHERE c.guildID = %d;", campaignTable, id)
+	err := db.QueryRow(cq).Scan(&cId)
+	return cId, err
+
 }
 
 func checkerr(err error, q string) {
