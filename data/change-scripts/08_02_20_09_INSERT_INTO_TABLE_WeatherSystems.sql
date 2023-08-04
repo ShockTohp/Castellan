@@ -1,2 +1,5 @@
-INSERT INTO weatherSystems (id, systemName, resolutionType, startingHex)
-VALUES (0, "Yoon Suin", "Hex Flower", 13);
+INSERT INTO weatherSystems (systemName, resolutionTypeId, startingHex)
+VALUES ("Yoon Suin", 1, 13);
+
+INSERT INTO weatherSystems (systemName, resolutionTypeId)
+VALUES ("OSE", 2);

@@ -6,10 +6,16 @@ CREATE TABLE campaigns (
 	PRIMARY KEY (id AUTOINCREMENT)
 );
 
+CREATE TABLE resolutionTypes (
+	id INTEGER,
+	name TEXT,
+	PRIMARY KEY (id AUTOINCREMENT)
+);
+
 CREATE TABLE weatherSystems (
 	id INTEGER,
 	systemName TEXT,
-	resolutionType TEXT,
+	resolutionTypeId INTEGER not null REFERENCES resolutionTypes (id),
 	startingHex INTEGER,
 	PRIMARY KEY (id AUTOINCREMENT)
 	);
@@ -47,4 +53,30 @@ CREATE TABLE weatherMarkers (
 	FOREIGN KEY (weatherSystemId) REFERENCES weatherSystems (id),
 	FOREIGN KEY (campaignId) REFERENCES campaigns (id)
 );
+
+CREATE TABLE weatherTables (
+	id INTEGER,
+	name TEXT,
+	weatherSystemId INTEGER not null REFERENCES weatherSystems (id),
+    diceType INTEGER,
+    diceNumber TEXT,
+	PRIMARY KEY (id AUTOINCREMENT)
+);
+
+CREATE TABLE weatherTableEntries (
+	id INTEGER,
+	diceResult INTEGER,
+	tableId INTEGER not null REFERENCES weatherTables (id),
+	weatherTypeId not null REFERENCES weatherTypes (id),
+	PRIMARY KEY (id AUTOINCREMENT)
+);
+
+CREATE TABLE weatherDetails (
+	id INTEGER,
+	weatherTypeId INTEGER not null REFERENCES weatherTypes (id),
+	location TEXT,
+	details TEXT,
+	PRIMARY KEY (id AUTOINCREMENT)
+);
+
 
