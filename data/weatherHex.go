@@ -36,8 +36,8 @@ func NewWeatherHex(id, one, two, three, four, five, six int, wt *WeatherType) * 
 
  func GetWeatherHexesForSystem(id int) map[int]*WeatherHex {
 
-	tableq :=  fmt.Sprintf("SELECT id, weatherTypeId, one, two, three, four, five, six FROM weatherhexes WHERE weatherSystemId = %d;", id);
-	rows, err := runQuery(tableq)//"SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%';")
+	tableq := "SELECT id, weatherTypeId, one, two, three, four, five, six FROM weatherhexes WHERE weatherSystemId = ?;"
+	rows, err := runQuery(tableq, id)
 	defer rows.Close()
 	checkerr(err)
 

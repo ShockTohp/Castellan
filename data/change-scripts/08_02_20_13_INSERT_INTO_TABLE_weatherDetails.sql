@@ -52,6 +52,33 @@ VALUES (6, "The Topaz Isles", "The mother of storms sits in the sky above, tossi
 INSERT INTO weatherDetails (weatherTypeId, location, details)
 VALUES (6, "The Yellow City", "Canals flood, 4/6 chance of moored boats being smashed to pieces.");
 
+INSERT INTO weatherDetails (weatherTypeId, location, details)
+VALUES (7, "Ocean", "Sailing impossible. Movement by oar at 1/3 rate due to fatigue.");
+
+INSERT INTO weatherDetails (weatherTypeId, location, details)
+VALUES (8, "Ocean", "Sailing movement rate reduced to 1/3 normal.");
+
+INSERT INTO weatherDetails (weatherTypeId, location, details)
+VALUES (9, "Ocean", "Sailing movement rate reduced to 1/2 normal.");
+
+INSERT INTO weatherDetails (weatherTypeId, location, details)
+VALUES (10, "Ocean", "Sailing movement rate reduced to 2/3 normal.");
+
+INSERT INTO weatherDetails (weatherTypeId, location, details)
+VALUES (11, "Ocean", "Normal sailing movement rate.");
+
+INSERT INTO weatherDetails (weatherTypeId, location, details)
+VALUES (12, "Ocean", "Sailing movement rate increated by 1/3.");
+
+INSERT INTO weatherDetails (weatherTypeId, location, details)
+VALUES (13, "Ocean", "Sailing movement rate increated by 1/2.");
+
+INSERT INTO weatherDetails (weatherTypeId, location, details)
+VALUES (14, "Ocean", "Sailing movement rate doubled. See **Near Gales**");
+
+INSERT INTO weatherDetails (weatherTypeId, location, details)
+VALUES (15, "Ocean", "Sailing movement rate tripled. **See gales and storms**");
+
 
 /* 1 = clear skies
 # 2 = Heat Wave

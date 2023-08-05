@@ -46,7 +46,10 @@ func weatherReport(GuildID, date string, loc ...string) string {
 	case r == hexFlower:
 		wr, err := GetReporterForCampaignDate(c.Id, date)
 		if err == nil {
-		return wr.detailReport(loc[0]);
+			if (len(loc) > 0) {
+			return wr.detailReport(loc[0]);
+			}
+			return wr.detailReport()
 		}
 		return fmt.Sprintf("%s", err)
 	case r == rDice:

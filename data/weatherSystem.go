@@ -36,8 +36,8 @@ func NewWeatherSystem(id, sh int, name string, rt *ResolutionType) * WeatherSyst
 }
 
 func GetWeatherSystemByName(name string) (* WeatherSystem, error) {
-	tableq :=  fmt.Sprintf("SELECT * FROM %s WHERE systemName LIKE \"%s\";", weatherSystemTable, name);
-	rows, err := runQuery(tableq)//"SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%';")
+	tableq :=  fmt.Sprintf("SELECT * FROM %s WHERE systemName LIKE ?;", weatherSystemTable);
+	rows, err := runQuery(tableq, name)//"SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%';")
 	defer rows.Close()
 	checkerr(err)
 
@@ -67,8 +67,8 @@ func GetWeatherSystemByName(name string) (* WeatherSystem, error) {
 }
 
 func getWeatherSystemById(id int) (* WeatherSystem, error) {
-	tableq :=  fmt.Sprintf("SELECT * FROM %s WHERE id = %d;", weatherSystemTable, id);
-	rows, err := runQuery(tableq)//"SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%';")
+	tableq :=  fmt.Sprintf("SELECT * FROM %s WHERE id = ?;", weatherSystemTable);
+	rows, err := runQuery(tableq, id)//"SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%';")
 	defer rows.Close()
 	checkerr(err)
 

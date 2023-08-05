@@ -25,8 +25,8 @@ func NewCampaign(id int, guildId int64, name string, ws *WeatherSystem) *Campaig
 func GetCampaignByGuild(gi string) ( *Campaign, error) {
 	i, _ := strconv.ParseInt(gi, 10, 64);
 	
-	tableq :=  fmt.Sprintf("SELECT * FROM %s c WHERE c.guildId = %d;", campaignTable, i);
-	rows, err := runQuery(tableq)
+	tableq :=  fmt.Sprintf("SELECT * FROM %s c WHERE c.guildId = ?", campaignTable);
+	rows, err := runQuery(tableq, i)
 	defer rows.Close()
 	checkerr(err)
 
