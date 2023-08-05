@@ -3,6 +3,7 @@ CREATE TABLE campaigns (
 	id INTEGER,
 	guildId INTEGER,
 	name TEXT,
+	weatherSystemId INTEGER not null REFERENCES weatherSystems (id),
 	PRIMARY KEY (id AUTOINCREMENT)
 );
 

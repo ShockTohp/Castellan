@@ -7,23 +7,46 @@ const weatherTypeTable = "weatherTypes"
 
 type WeatherType struct {
 	Id int
-	weatherSystemId int
-	Name string
+	name string
 }
 
-func GetWeatherTypesForSystem(id int) map[int]WeatherType {
-	tableq :=  fmt.Sprintf("SELECT * FROM %s WHERE weatherSystemId = %d;", weatherTypeTable, id);
+func NewWeatherType(id int, n string) *WeatherType {
+	return &WeatherType{
+		Id: id,
+		name: n,
+	}
+}
+
+func GetWeatherTypesForSystem(id int) map[int]*WeatherType {
+	tableq :=  fmt.Sprintf("SELECT id, weatherName FROM %s WHERE weatherSystemId = %d;", weatherTypeTable, id);
 	rows, err := runQuery(tableq)//"SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%';")
 	defer rows.Close()
-	checkerr(err, "tableq")
+	checkerr(err)
 
-	types := map[int]WeatherType{}
+	types := map[int]*WeatherType{}
 	for rows.Next() {
 		currentType := WeatherType{}
-		err = rows.Scan(&currentType.Id, &currentType.weatherSystemId, &currentType.Name) 
-		checkerr(err, "none")
-		types[currentType.Id] = currentType;
+		err = rows.Scan(&currentType.Id, &currentType.name) 
+		checkerr(err)
+		types[currentType.Id] = NewWeatherType(currentType.Id, currentType.name);
 	}
 
 	 return types;	
+}
+
+func getWeatherTypeById(id int) *WeatherType {
+	tableq :=  fmt.Sprintf("SELECT weatherName FROM %s WHERE id = %d;", weatherTypeTable, id);
+	var name string
+	err := db.QueryRow(tableq).Scan(&name)//"SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%';")
+	checkerr(err)
+
+	 return NewWeatherType(id, name)	
+}
+
+func (wt WeatherType) GetWeatherName() string {
+	return wt.name
+}
+
+func (wt WeatherType) String() string {
+	return fmt.Sprintf("*****\n WEATHER TYPE\n %s", wt.name)
 }

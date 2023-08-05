@@ -3,6 +3,7 @@ package data
 
 import (
 	"fmt"
+	"log"
 )
 /* The structure of a Yoon Suin weather hex.
  * The numbers are pointer to the next hex ID for a given d6 roll.
@@ -11,8 +12,7 @@ import (
  
 type WeatherHex struct {
 	Id int
-	weatherSystem int
-	WeatherTypeId int 
+	WeatherType *WeatherType
 	One int
 	Two int
 	Three int
@@ -21,20 +21,53 @@ type WeatherHex struct {
 	Six int	
 }
 
- func GetWeatherHexesForSystem(id int) map[int]WeatherHex {
+func NewWeatherHex(id, one, two, three, four, five, six int, wt *WeatherType) * WeatherHex {
+	return &WeatherHex{
+		Id: id,
+	    WeatherType: wt,
+		One: one,
+		Two: two,
+		Three: three,
+		Four: four,
+		Five: five,
+		Six: six,	
+	}
+}
 
-	tableq :=  fmt.Sprintf("SELECT * FROM weatherhexes WHERE weatherSystemId = %d;", id);
+ func GetWeatherHexesForSystem(id int) map[int]*WeatherHex {
+
+	tableq :=  fmt.Sprintf("SELECT id, weatherTypeId, one, two, three, four, five, six FROM weatherhexes WHERE weatherSystemId = %d;", id);
 	rows, err := runQuery(tableq)//"SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%';")
 	defer rows.Close()
-	checkerr(err, "tableq")
+	checkerr(err)
 
-	hexes := map[int]WeatherHex{}
+	hexes := map[int]*WeatherHex{}
 	for rows.Next() {
-		currentHex := WeatherHex{}
-		err = rows.Scan(&currentHex.Id, &currentHex.weatherSystem, &currentHex.WeatherTypeId, &currentHex.One, &currentHex.Two, &currentHex.Three, &currentHex.Four, &currentHex.Five, &currentHex.Six) 
-		checkerr(err, "none")
-		hexes[currentHex.Id] = currentHex;
+		ch := WeatherHex{}
+		var wtId int;
+		err = rows.Scan(&ch.Id, &wtId, &ch.One, &ch.Two, &ch.Three, &ch.Four, &ch.Five, &ch.Six) 
+		checkerr(err)
+		wt := getWeatherTypeById(wtId)
+		hexes[ch.Id] = NewWeatherHex(ch.Id, ch.One, ch.Two, ch.Three, ch.Four, ch.Five, ch.Six, wt);
 	}
-
+	 if len(hexes) < 1 {
+		log.Fatal(fmt.Sprintf("No hexes retrieved for system %d", id))
+	 }
 	 return hexes;	
+}
+
+func (wh WeatherHex) GetWeatherName() string {
+	return wh.WeatherType.GetWeatherName()
+}
+
+func (wh WeatherHex) String() string {
+	return fmt.Sprintf("******\n WEATHER HEX:\n %d\n%s\n%d\n%d\n%d\n%d\n%d\n%d\n",
+	wh.Id,
+	wh.WeatherType,
+	wh.One,
+	wh.Two,
+	wh.Three,
+	wh.Four,
+	wh.Five,
+	wh.Six)
 }

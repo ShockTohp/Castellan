@@ -1,0 +1,6 @@
+package castellancore
+
+
+func scheduleWeatherReport() {
+
+}

@@ -6,6 +6,7 @@ import (
 	"os/signal"
 	"log"
 	"time"
+	//"fmt"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/go-co-op/gocron"
@@ -45,29 +46,41 @@ var (
 	commands = []*discordgo.ApplicationCommand{
 		{
 			Name: "weather",
-			Description: "Rolls for the next day's weather. in chain",
+			Description: "Rolls for the next unrolled day and gives a short report.",
 		},
 		{
-			Name:        "daily-weather",
-			Description: "Command for demonstrating options",
+			Name:        "weather-report",
+			Description: "Delivers the weather report for a given day and location.",
 			Options: []*discordgo.ApplicationCommandOption{
 
 				{
 					Type:        discordgo.ApplicationCommandOptionString,
-					Name:        "type",
-					Description: "String option",
+					Name:        "date",
+					Description: "The date you wish to retrieve.",
 					Required:    true,
+				},
+				{
+					Type:        discordgo.ApplicationCommandOptionString,
+					Name:        "location",
+					Description: "Give a specific locations weather, if configured.",
+					Required:    false,
 				},
 			},
 		},
 		{
-			Name: "schedule",
+			Name: "schedule-report",
 			Description: "Schedule a weather report",
 			Options: []*discordgo.ApplicationCommandOption{
 				{
 				Type: discordgo.ApplicationCommandOptionInteger,
-				Name: "seconds",
-				Description: "amount of seconds until next command",
+				Name: "time",
+				Description: "Time you want to recieve the report",
+				Required: true,
+				},
+				{
+				Type: discordgo.ApplicationCommandOptionInteger,
+				Name: "timezone",
+				Description: "Your timezone",
 				Required: true,
 				},
 			},
@@ -79,9 +92,15 @@ var (
 
 				{
 					Type:        discordgo.ApplicationCommandOptionString,
-					Name:        "name",
-					Description: "String option",
+					Name:        "campaign-name",
+					Description: "The name of your campaign",
 					Required:    true,
+				},
+				{
+					Type:        discordgo.ApplicationCommandOptionString,
+					Name:        "weather-system",
+					Description: "The weather system for your campaign. THIS CAN NOT BE CHANGED. Defaults to OSE.",
+					Required:    false,
 				},
 			},
 		},
@@ -94,11 +113,11 @@ var (
 			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
 				Data: &discordgo.InteractionResponseData{
-					Content: weather(i.Interaction.GuildID, "Yoon Suin"),
+					Content: weather(i.Interaction.GuildID),
 				},
 			})
 		},
-		"daily-weather": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+		"weather-report": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			// Access options in the order provided by the user.
 			options := i.ApplicationCommandData().Options
 
@@ -110,7 +129,7 @@ var (
 
 			// Get the value from the option map.
 			// When the option exists, ok = true
-			if option, ok := optionMap["type"]; ok {
+			if option, nok := optionMap["campaign-name"]; nok {
 				// Option values must be type asserted from interface{}.
 				// Discordgo provides utility functions to make this simple.
 				msg := dailyWeather(i.Interaction.GuildID, option.StringValue())
@@ -125,12 +144,12 @@ var (
 			}
 
 					},
-		"schedule": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+		"schedule-report": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			options := i.ApplicationCommandData().Options
 			optionMap := make(map[string]*discordgo.ApplicationCommandInteractionDataOption, len(options))
 			weatherMessage := func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			channel := i.Interaction.ChannelID
-			_, err := s.ChannelMessageSend(channel, weather(i.Interaction.GuildID, "Yoon Suin"))
+			_, err := s.ChannelMessageSend(channel, weather(i.Interaction.GuildID))
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -165,11 +184,15 @@ var (
 
 			// Get the value from the option map.
 			// When the option exists, ok = true
-			opt, ok := optionMap["name"]; 
-			if ok {
+			if opt, ok := optionMap["campaign-name"]; ok {
 				// Option values must be type asserted from interface{}.
 				// Discordgo provides utility functions to make this simple.
-				msg := registerCampaign(i.Interaction.GuildID, opt.StringValue())
+				var msg string;
+				if wth, wok := optionMap["weather-system"]; wok {
+					msg = registerCampaign(i.Interaction.GuildID, opt.StringValue(), wth.StringValue())
+				} else {
+				msg = registerCampaign(i.Interaction.GuildID, opt.StringValue(), "OSE")
+				}
 				s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 				// Ignore type for now, they will be discussed in "responses"
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
