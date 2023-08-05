@@ -8,6 +8,8 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+const DateLayout = "2006-01-02"
+
 var (
 	db *sql.DB
 )
