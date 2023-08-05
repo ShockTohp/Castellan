@@ -71,7 +71,7 @@ var (
 				},
 			},
 		},
-		{
+		/*{
 			Name: "schedule-report",
 			Description: "Schedule a weather report",
 			Options: []*discordgo.ApplicationCommandOption{
@@ -88,7 +88,7 @@ var (
 				Required: true,
 				},
 			},
-		},
+		},*/
 		{
 			Name:        "register",
 			Description: "Register a new campaign in this server.",
@@ -164,7 +164,7 @@ var (
 			}
 
 					},
-		"schedule-report": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+		/*"schedule-report": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			options := i.ApplicationCommandData().Options
 			optionMap := make(map[string]*discordgo.ApplicationCommandInteractionDataOption, len(options))
 			weatherMessage := func(s *discordgo.Session, i *discordgo.InteractionCreate) {
@@ -191,7 +191,7 @@ var (
 					},
 				})
 			}
-		},
+		},*/
 			"register": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			// Access options in the order provided by the user.
 			options := i.ApplicationCommandData().Options
