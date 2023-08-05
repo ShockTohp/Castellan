@@ -18,8 +18,8 @@ func NewResolutionType(id int, name string) (* ResolutionType) {
 }
 
 func getResolutionTypeById(id int) (* ResolutionType, error) {
-	tableq :=  fmt.Sprintf("SELECT * FROM %s WHERE id = %d;", resTable, id);
-	rows, err := runQuery(tableq)//"SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%';")
+	tableq :=  fmt.Sprintf("SELECT * FROM %s WHERE id = ?;", resTable);
+	rows, err := runQuery(tableq, id)//"SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%';")
 	defer rows.Close()
 	checkerr(err)
 

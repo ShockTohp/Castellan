@@ -16,13 +16,13 @@ var (
 
 func init() {
 	db, _ = sql.Open("sqlite3", "./data/castellan.db")
-	log.Println("database initlized")
     // Set maximum idle connections
     db.SetMaxIdleConns(10)
 
     // Set maximum open connections
     db.SetMaxOpenConns(100)
 	loadValidWeatherSystems()
+	log.Println("database initlized")
 }
 
 func loadValidWeatherSystems() {
@@ -61,8 +61,13 @@ func logerr(err error) {
 	}
 }
 
-func runQuery(query string) (*sql.Rows, error) {
-	return db.Query(query);
+func runQuery(query string, params ...interface{}) (*sql.Rows, error) {
+	stmt, err := db.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+	return stmt.Query(params...);
 }
+
 
 

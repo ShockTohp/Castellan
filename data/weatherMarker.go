@@ -45,8 +45,8 @@ func NewWeatherMarker(id, ch, ldr int, date time.Time) *WeatherMarker {
 }*/
 
 func GetLastWeatherMarkerForCampaign(cId int) *WeatherMarker {
-	tableq :=  fmt.Sprintf("SELECT id, hexId, weatherDate, lastDiceRoll FROM %s WHERE campaignId = %d ORDER BY weatherDate DESC LIMIT 1;", markerTable, cId);
-	rows, err := runQuery(tableq)//"SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%';")
+	tableq :=  fmt.Sprintf("SELECT id, hexId, weatherDate, lastDiceRoll FROM %s WHERE campaignId = ? ORDER BY weatherDate DESC LIMIT 1;", markerTable);
+	rows, err := runQuery(tableq, cId)//"SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%';")
 	defer rows.Close()
 	checkerr(err)
 

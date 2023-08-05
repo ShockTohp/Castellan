@@ -18,8 +18,8 @@ func NewWeatherType(id int, n string) *WeatherType {
 }
 
 func GetWeatherTypesForSystem(id int) map[int]*WeatherType {
-	tableq :=  fmt.Sprintf("SELECT id, weatherName FROM %s WHERE weatherSystemId = %d;", weatherTypeTable, id);
-	rows, err := runQuery(tableq)//"SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%';")
+	tableq :=  fmt.Sprintf("SELECT id, weatherName FROM %s WHERE weatherSystemId = ?;", weatherTypeTable);
+	rows, err := runQuery(tableq, id)//"SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%';")
 	defer rows.Close()
 	checkerr(err)
 
@@ -35,9 +35,9 @@ func GetWeatherTypesForSystem(id int) map[int]*WeatherType {
 }
 
 func getWeatherTypeById(id int) *WeatherType {
-	tableq :=  fmt.Sprintf("SELECT weatherName FROM %s WHERE id = %d;", weatherTypeTable, id);
+	tableq :=  fmt.Sprintf("SELECT weatherName FROM %s WHERE id = ?;", weatherTypeTable);
 	var name string
-	err := db.QueryRow(tableq).Scan(&name)//"SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%';")
+	err := db.QueryRow(tableq, id).Scan(&name)//"SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%';")
 	checkerr(err)
 
 	 return NewWeatherType(id, name)	

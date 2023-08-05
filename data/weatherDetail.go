@@ -34,8 +34,8 @@ func (wd WeatherDetail) Details() string {
 }
 
 func GetWeatherDetailsForCampaignDate(cId int, date string) map[string]*WeatherDetail{
-	tableq :=  fmt.Sprintf("SELECT weatherName, location, details FROM %s WHERE campaignId = %d AND weatherDate LIKE \"%s\";", weatherDetailTable, cId, date);
-	rows, err := runQuery(tableq)
+	tableq :=  fmt.Sprintf("SELECT weatherName, location, details FROM %s WHERE campaignId = ? AND weatherDate LIKE ?;", weatherDetailTable);
+	rows, err := runQuery(tableq, cId, date)
 	defer rows.Close()
 	checkerr(err)
 
@@ -52,8 +52,8 @@ func GetWeatherDetailsForCampaignDate(cId int, date string) map[string]*WeatherD
 }
 
 func GetLatestCampaignDate(cId int) time.Time {
-	tableq :=  fmt.Sprintf("SELECT weatherDate FROM %s WHERE campaignId = %d ORDER BY weatherDate DESC LIMIT 1;", weatherDetailTable, cId);
-	rows, err := runQuery(tableq)
+	tableq :=  fmt.Sprintf("SELECT weatherDate FROM %s WHERE campaignId = ? ORDER BY weatherDate DESC LIMIT 1;", weatherDetailTable);
+	rows, err := runQuery(tableq, cId)
 	defer rows.Close()
 	checkerr(err)
 
@@ -72,8 +72,8 @@ func GetLatestCampaignDate(cId int) time.Time {
 }
 
 func GetEarliestCampaignDate(cId int) time.Time {
-	tableq :=  fmt.Sprintf("SELECT weatherDate FROM %s WHERE campaignId = %d ORDER BY weatherDate ASC LIMIT 1;", weatherDetailTable, cId);
-	rows, err := runQuery(tableq)
+	tableq :=  fmt.Sprintf("SELECT weatherDate FROM %s WHERE campaignId = ? ORDER BY weatherDate ASC LIMIT 1;", weatherDetailTable);
+	rows, err := runQuery(tableq, cId)
 	defer rows.Close()
 	checkerr(err)
 
