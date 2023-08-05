@@ -129,17 +129,24 @@ var (
 
 			// Get the value from the option map.
 			// When the option exists, ok = true
-			if option, nok := optionMap["campaign-name"]; nok {
-				// Option values must be type asserted from interface{}.
-				// Discordgo provides utility functions to make this simple.
-				msg := dailyWeather(i.Interaction.GuildID, option.StringValue())
-				s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-				// Ignore type for now, they will be discussed in "responses"
+			if option, nok := optionMap["date"]; nok {
+				if loc, lok := optionMap["location"]; lok {
+					msg := weatherReport(i.Interaction.GuildID, option.StringValue(), loc.StringValue())
+					s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
 				Data: &discordgo.InteractionResponseData{
 					Content: msg ,
 				},
 			})
+				} else {
+					msg := weatherReport(i.Interaction.GuildID, option.StringValue())
+				s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: msg ,
+				},
+			})
+		}
 
 			}
 

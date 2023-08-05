@@ -80,21 +80,18 @@ func (wr weatherHexResolver) weatherReport() string {
 	return fmt.Sprintf("Weather report for %s. The Dice roll today was a  %d. The hex is currently: %d. That means the current weather is %s", wr.marker.DateString(), 
 	wr.marker.GetLastDiceRoll(),
 	wr.marker.GetMarkedHex(), 
-	wr.getWeatherTypeForLastMarker())
+	wr.getCurrentMarkedWeatherName())
 }
 
 func dateString(date time.Time) string {
 	return fmt.Sprintf("%d-%d-%d", date.Year(), date.Month(), date.Day())
 }
 
-func (wr weatherHexResolver) getWeatherTypeForLastMarker() string {
+func (wr weatherHexResolver) getCurrentMarkedWeatherName() string {
 	return wr.getCurrentHex().GetWeatherName()
 }
 
 
-func getTodaysWeatherReport(campaignId int) string {
-	return "Todays Weather Report is not functional"
-}
 
 func dailyWeather(id, wType string) (string) {
 	return "Daily Weather not yet functional"
