@@ -45,6 +45,10 @@ var (
 
 	commands = []*discordgo.ApplicationCommand{
 		{
+			Name: "help",
+			Description: "Outputs the help message.",
+		},
+		{
 			Name: "weather",
 			Description: "Rolls for the next unrolled day and gives a short report.",
 		},
@@ -99,7 +103,7 @@ var (
 				{
 					Type:        discordgo.ApplicationCommandOptionString,
 					Name:        "weather-system",
-					Description: "The weather system for your campaign. THIS CAN NOT BE CHANGED. Defaults to OSE.",
+					Description: "The weather system for your campaign. THIS CAN NOT BE CHANGED. Defaults to Yoon Suin.",
 					Required:    false,
 				},
 			},
@@ -109,6 +113,15 @@ var (
 
 
 	commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+		"help": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+				s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: helpMessage,
+				},
+			})
+
+		},
 		"weather": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
@@ -198,7 +211,7 @@ var (
 				if wth, wok := optionMap["weather-system"]; wok {
 					msg = registerCampaign(i.Interaction.GuildID, opt.StringValue(), wth.StringValue())
 				} else {
-				msg = registerCampaign(i.Interaction.GuildID, opt.StringValue(), "OSE")
+				msg = registerCampaign(i.Interaction.GuildID, opt.StringValue(), "Yoon Suin")
 				}
 				s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 				// Ignore type for now, they will be discussed in "responses"
