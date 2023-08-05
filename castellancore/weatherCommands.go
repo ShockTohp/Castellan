@@ -35,7 +35,7 @@ func weather(GuildID string) string {
 
 
 
-func weatherReport(GuildID, date string, params ...string) string {
+func weatherReport(GuildID, date string, loc ...string) string {
 	c, err := data.GetCampaignByGuild(GuildID)
 	if err != nil {
 		log.Println(err)
@@ -44,8 +44,11 @@ func weatherReport(GuildID, date string, params ...string) string {
 	var r = c.WeatherSystem.ResolutionType.Name
 	switch {
 	case r == hexFlower:
-		wr := GetReporterForCampaignDate(c.Id, date)
-		return wr.detailReport(params);
+		wr, err := GetReporterForCampaignDate(c.Id, date)
+		if err == nil {
+		return wr.detailReport(loc[0]);
+		}
+		return fmt.Sprintf("%s", err)
 	case r == rDice:
 		return "Dice tables not yet implemented"
 	default:
