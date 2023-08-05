@@ -17,7 +17,7 @@ var s *discordgo.Session
 var sc *gocron.Scheduler
 var (
 	GuildID     	= flag.String("guild", "", "Test guild ID. If not passed - bot registers commands globall")
-	BotToken		= flag.String("token", "1136002891132452875", "Bot access token")
+	BotToken		= flag.String("token", "", "Bot access token")
 	RemoveCommands	= flag.Bool("rmcmd", true, "Remove all commands after shutting down or not") 
 )
 

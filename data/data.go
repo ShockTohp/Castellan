@@ -4,6 +4,7 @@ import (
 	"log"
 	"fmt"
 	"database/sql"		
+	"os"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -15,7 +16,8 @@ var (
 )
 
 func init() {
-	db, _ = sql.Open("sqlite3", "./data/castellan.db")
+	path := os.Getenv("CASTELLAN_DATABASE_PATH")
+	db, _ = sql.Open("sqlite3", path)
     // Set maximum idle connections
     db.SetMaxIdleConns(10)
 
