@@ -35,8 +35,22 @@ func weather(GuildID string) string {
 
 
 
-func weatherReport(date, loc string) {
-
+func weatherReport(GuildID, date string, params ...string) string {
+	c, err := data.GetCampaignByGuild(GuildID)
+	if err != nil {
+		log.Println(err)
+		return "Unable to retrieve campaign information, have you intialized a campaign?"
+	}
+	var r = c.WeatherSystem.ResolutionType.Name
+	switch {
+	case r == hexFlower:
+		wr := GetReporterForCampaignDate(c.Id, date)
+		return wr.detailReport(params);
+	case r == rDice:
+		return "Dice tables not yet implemented"
+	default:
+		return fmt.Sprintf("This campaign has an unknown weather resolution sytem: %s. Please contact the developer.", r)
+	}
 }
 
 
