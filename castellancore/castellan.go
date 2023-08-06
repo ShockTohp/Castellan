@@ -32,6 +32,14 @@ func init() {
 
 func init() {
 	var err error
+	envToken := os.Getenv("BOT_TOKEN")
+	if envToken != "" {
+		s, err = discordgo.New("Bot " + *BotToken)
+		if err != nil {
+		log.Fatalf("Invalid bot parameters: %v", err)
+		}
+
+	}
 	s, err = discordgo.New("Bot " + *BotToken)
 	if err != nil {
 		log.Fatalf("Invalid bot parameters: %v", err)
