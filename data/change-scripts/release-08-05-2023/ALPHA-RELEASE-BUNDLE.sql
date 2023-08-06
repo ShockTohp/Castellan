@@ -166,7 +166,7 @@ INSERT INTO weatherHexes (id, weatherSystemId, weatherTypeId, one, two, three, f
 VALUES (9, 1, 4, 36, 9, 16, 15, 8, 4);
 
 INSERT INTO weatherHexes (id, weatherSystemId, weatherTypeId, one, two, three, four, five, six)
-VALUES (10, 1, 10, 5, 11, 17, 10, 10);
+VALUES (10, 1, 6, 10, 5, 11, 17, 10, 10);
 
 INSERT INTO weatherHexes (id, weatherSystemId, weatherTypeId, one, two, three, four, five, six)
 VALUES (11, 1, 5, 5, 6, 12, 18, 17, 10);
