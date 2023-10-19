@@ -7,19 +7,43 @@ import (
 )
 const campaignTable = "campaigns"
 type Campaign struct {
-	Id int
-	GuildId int64
-	Name string
-	WeatherSystem *WeatherSystem
+	id int
+	guildId int64
+	name string
+	weatherSystem *WeatherSystem
 }
 
 func NewCampaign(id int, guildId int64, name string, ws *WeatherSystem) *Campaign {
 	return &Campaign {
-		Id: id,
-		GuildId: guildId,
-		Name: name,
-		WeatherSystem: ws,
+		id: id,
+		guildId: guildId,
+		name: name,
+		weatherSystem: ws,
 	}
+}
+
+func (c Campaign) Id() int {
+	return c.id
+}
+
+func (c Campaign) GuildId() int64 {
+	return c.guildId
+}
+
+func (c Campaign) Name() string {
+	return c.name
+}
+
+func (c Campaign) WeatherSystem() *WeatherSystem {
+	return c.weatherSystem
+}
+
+func (c Campaign) CampaignHasReportForDate(date string) bool {
+	det := GetWeatherDetailsForCampaignDate(c.id, date)	
+	if len(det) > 0 {
+		return true
+	}
+	return false
 }
 
 func GetCampaignByGuild(gi string) ( *Campaign, error) {
@@ -35,7 +59,7 @@ func GetCampaignByGuild(gi string) ( *Campaign, error) {
 	for rows.Next() {
 		currentC := Campaign{}
 		var currentWsId = 0 
-		err = rows.Scan(&currentC.Id, &currentC.GuildId, &currentC.Name, &currentWsId) 
+		err = rows.Scan(&currentC.id, &currentC.guildId, &currentC.name, &currentWsId) 
 		checkerr(err)
 		campaigns = append(campaigns, currentC);
 		weatherSystemIds = append(weatherSystemIds, currentWsId)
@@ -50,7 +74,38 @@ func GetCampaignByGuild(gi string) ( *Campaign, error) {
 	if err != nil {
 		return nil, err
 	}
-	 return NewCampaign(campaigns[0].Id, campaigns[0].GuildId, campaigns[0].Name, ws), nil;	
+	 return NewCampaign(campaigns[0].id, campaigns[0].guildId, campaigns[0].name, ws), nil;	
+
+
+}
+
+func GetCampaignById(id int) ( *Campaign, error) {
+	tableq :=  fmt.Sprintf("SELECT * FROM %s c WHERE c.guildId = ?", campaignTable);
+	rows, err := runQuery(tableq, id)
+	defer rows.Close()
+	checkerr(err)
+
+	campaigns := make([]Campaign, 0)
+	weatherSystemIds := make([]int, 0)
+	for rows.Next() {
+		currentC := Campaign{}
+		var currentWsId = 0 
+		err = rows.Scan(&currentC.id, &currentC.guildId, &currentC.name, &currentWsId) 
+		checkerr(err)
+		campaigns = append(campaigns, currentC);
+		weatherSystemIds = append(weatherSystemIds, currentWsId)
+	}
+
+	if (len(campaigns) > 1) {
+		return nil, errors.New(fmt.Sprintf("This server has more than one campaign configured."));
+	} else if (len(campaigns) < 1) {
+		return nil, errors.New(fmt.Sprintf("Unable to retrieve any campaings. Does this server have one registered?"));
+	}
+	ws, err := getWeatherSystemById(weatherSystemIds[0]);
+	if err != nil {
+		return nil, err
+	}
+	 return NewCampaign(campaigns[0].id, campaigns[0].guildId, campaigns[0].name, ws), nil;	
 
 
 }
@@ -83,5 +138,7 @@ func guildHasAtLeastOneCampaign(gi int64) bool {
 	} 
 	return false
 }
+
+
 
 

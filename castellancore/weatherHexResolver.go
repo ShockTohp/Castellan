@@ -20,7 +20,7 @@ type weatherHexResolver struct {
 func NewWeatherHexResolver(c *data.Campaign, wh map[int]*data.WeatherHex, m *data.WeatherMarker) (*weatherHexResolver) {
 	return &weatherHexResolver{
 	Campaign:  c,
-	WeatherSystem: c.WeatherSystem,
+	WeatherSystem: c.WeatherSystem(),
 	weatherHexes: wh,
 	marker: m,
 	}
@@ -37,7 +37,7 @@ func (wr *weatherHexResolver) resolve() string {
 			return "Sorry, we encountered an dice rolling error. Please report this to the admin. "
 		}
 		wr.advance(nextHex, diceRoll)
-		defer wr.marker.WriteMarker(wr.Campaign.Id, wr.WeatherSystem.Id)
+		defer wr.marker.WriteMarker(wr.Campaign.Id(), wr.WeatherSystem.Id)
 		return wr.weatherReport()
 	}
 }
@@ -71,7 +71,7 @@ func (wr *weatherHexResolver) resolveFirstHexFlower() *weatherHexResolver {
 	diceRoll := 0 //this means that this is the first marker in this chain
 	firstHex := wr.WeatherSystem.StartingHex;
     nm := data.NewWeatherMarker(0, firstHex, diceRoll, time.Now())
-	defer nm.WriteMarker(wr.Campaign.Id, wr.WeatherSystem.Id)
+	defer nm.WriteMarker(wr.Campaign.Id(), wr.WeatherSystem.Id)
 	wr.marker = nm
 	return wr
 }

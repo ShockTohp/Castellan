@@ -1,6 +1,0 @@
-package castellancore
-
-
-func scheduleWeatherReport() {
-
-}

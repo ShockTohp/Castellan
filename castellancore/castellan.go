@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"log"
 	"time"
-	//"fmt"
+	"fmt"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/go-co-op/gocron"
@@ -79,24 +79,24 @@ var (
 				},
 			},
 		},
-		/*{
+		{
 			Name: "schedule-report",
 			Description: "Schedule a weather report",
 			Options: []*discordgo.ApplicationCommandOption{
 				{
-				Type: discordgo.ApplicationCommandOptionInteger,
+				Type: discordgo.ApplicationCommandOptionString,
 				Name: "time",
 				Description: "Time you want to recieve the report",
 				Required: true,
 				},
-				{
-				Type: discordgo.ApplicationCommandOptionInteger,
+			/*	{
+				Type: discordgo.ApplicationCommandOptionString,
 				Name: "timezone",
 				Description: "Your timezone",
 				Required: true,
-				},
+				},*/
 			},
-		},*/
+		},
 		{
 			Name:        "register",
 			Description: "Register a new campaign in this server.",
@@ -172,34 +172,25 @@ var (
 			}
 
 					},
-		/*"schedule-report": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+		"schedule-report": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			options := i.ApplicationCommandData().Options
 			optionMap := make(map[string]*discordgo.ApplicationCommandInteractionDataOption, len(options))
-			weatherMessage := func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-			channel := i.Interaction.ChannelID
-			_, err := s.ChannelMessageSend(channel, weather(i.Interaction.GuildID))
-			if err != nil {
-				log.Fatal(err)
-			}
-			log.Println("tried to send message")
-						}
-
+			
 
 			for _, opt := range options {
 				optionMap[opt.Name] = opt
 			}
-			if opt, ok := optionMap["seconds"]; ok {
-				var timeout int = int(opt.IntValue())
-				//timeout = time.Duration(opt.IntValue()) 
-				sc.Every(timeout).Second().Do(weatherMessage, s, i)
+			if opt, ok := optionMap["time"]; ok {
+				l := func () {log.Println("fired")}
+				sc.Every(1).Day().At("22:52").Do(l)
 				s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
 				Data: &discordgo.InteractionResponseData{
-					Content: "Message Scheduled", 
+					Content: fmt.Sprintf("Daily weather report scheduled for %s", opt.StringValue()), 
 					},
 				})
 			}
-		},*/
+		},
 			"register": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			// Access options in the order provided by the user.
 			options := i.ApplicationCommandData().Options
@@ -246,7 +237,9 @@ func init() {
 	})
 }
 
-
+func getSession() * discordgo.Session {
+	return s;
+}
 
 func Run() {
 	s.AddHandler(func(s *discordgo.Session, r *discordgo.Ready) {
